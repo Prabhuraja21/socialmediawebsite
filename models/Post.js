@@ -37,26 +37,23 @@ Post.prototype.validate = function () {
   }
 };
 
-Post.prototype.create = function () {
-  return new Promise((resolve, reject) => {
-    this.CleanUp();
-    this.validate();
+Post.prototype.create = async function(){  
+  this.CleanUp();
+  this.validate();
     if (!this.errors.length) {
       // save post into database
-      postsCollection
-        .insertOne(this.data)
-        .then((info) => {
-          resolve(info.insertedId);
-        })
-        .catch(() => {
-          this.errors.push("Please try again later.");
-          reject(this.errors);
-        });
+      try{
+        const info = await postsCollection.insertOne(this.data);
+        return info.insertedId
+      }catch(e){
+        this.errors.push("Please try again later.");
+        throw this.errors
+      }
+       
     } else {
-      reject(this.errors);
+      throw this.errors
     }
-  });
-};
+  }    
 
 Post.prototype.update = function () {
   return new Promise(async (resolve, reject) => {

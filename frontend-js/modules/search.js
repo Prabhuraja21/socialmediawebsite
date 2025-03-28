@@ -65,6 +65,15 @@ export default class Search {
         </a>`
         }).join('')}
       </div>`)
+      document.querySelectorAll('.live-search-results').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.closeOverLay(); // Close the search overlay
+                history.pushState(null, null, link.href); // Update browser history
+                navigateTo(link.href); // Load the post via SPA
+            });
+        });
+
     }else{
       this.resultsArea.innerHTML = `<p class="alert alert-danger text-center shadow-sm ">Sorry, we could not find any results for that search.</p>`
     }
